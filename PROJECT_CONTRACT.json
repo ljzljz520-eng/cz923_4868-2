@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "metrics": {
+    "production_loc": 2070,
+    "production_files": 20,
+    "production_packages": 8,
+    "test_files": 9,
+    "production_functions": 115,
+    "decision_points": 126
+  },
+  "persistence": {
+    "module": "go.etcd.io/bbolt",
+    "entities": ["Patient", "Prescription", "PickupTicket", "DispenseRecord", "CounterEvent"],
+    "reopen_test": "TestPersistenceSurvivesReopen"
+  },
+  "workflows": [
+    {"steps":["校验患者身份","保存患者资料","录入处方药品","标记处方已备药"],"test":"TestBusinessChain01"},
+    {"steps":["读取患者与处方","分配确定性号码","保存待取票据","在看板展示待取药"],"test":"TestBusinessChain02"},
+    {"steps":["选择最早待取票据","更新票据为已叫号","校验发药数量","保存完整发药记录并完成票据"],"test":"TestBusinessChain03"},
+    {"steps":["创建票据","叫号并转移状态","提交发药数量","验证异常时状态保持"],"test":"TestBusinessChain05"}
+  ]
+}

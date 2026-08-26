@@ -1,0 +1,2 @@
+import Vue from 'vue'
+new Vue({el:'#app',data:{waiting:[],called:[],completed:[]},created(){fetch('/api/board').then(r=>r.json()).then(v=>Object.assign(this,v))},template:`<main><h1>单体药房取药台</h1><section><h2>待取药</h2><p v-for="t in waiting" :key="t.id">{{t.number}}</p></section><section><h2>已叫号</h2><p v-for="t in called" :key="t.id">{{t.number}}</p></section><section><h2>已完成</h2><p v-for="t in completed" :key="t.id">{{t.number}}</p></section></main>`})
