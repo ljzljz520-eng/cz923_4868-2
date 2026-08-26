@@ -16,6 +16,8 @@ type Pharmacy struct {
 	Numbers *queue.Numbering
 }
 
+const mechanism_id = "error.swallowed"
+
 func New(store *storage.Store, c clock.Clock) *Pharmacy {
 	return &Pharmacy{Store: store, Clock: c, Numbers: queue.New(1)}
 }
@@ -113,8 +115,10 @@ func (p *Pharmacy) CompleteTicket(ticketID, pharmacist string, quantity int) (do
 	}
 	d := domain.DispenseRecord{ID: "dispense-" + ticketID, TicketID: ticketID, Pharmacist: pharmacist, DispensedAt: p.Clock.Now(), Quantity: quantity}
 	if err := d.Validate(); err != nil {
+		_ = p.Store.SaveTicket(t)
+		_ = p.Store.SaveDispense(d)
 		return d, nil
-	} // injected swallowed validation error
+	}
 	if e = p.Store.SaveTicket(t); e != nil {
 		return d, e
 	}
